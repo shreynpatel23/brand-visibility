@@ -23,10 +23,10 @@ const Layout: React.FC = () => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Brands', href: '/brands', icon: Building2 },
-    { name: 'Prompt Logs', href: '/prompt-logs', icon: FileText },
-    { name: 'Team', href: '/users', icon: Users },
+    { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
+    { name: 'Brands', href: '/app/brands', icon: Building2 },
+    { name: 'Prompt Logs', href: '/app/prompt-logs', icon: FileText },
+    { name: 'Team', href: '/app/users', icon: Users },
   ];
 
   const handleLogout = () => {

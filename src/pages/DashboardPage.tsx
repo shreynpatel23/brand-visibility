@@ -145,7 +145,7 @@ const DashboardPage: React.FC = () => {
           </p>
         </div>
         <Link
-          to="/brands/create"
+          to="/app/brands/create"
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -221,7 +221,7 @@ const DashboardPage: React.FC = () => {
                   </div>
                 </div>
                 <Link
-                  to={`/brands/${brand.id}/edit`}
+                  to={`/app/brands/${brand.id}/edit`}
                   className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
                 >
                   Edit
@@ -236,7 +236,7 @@ const DashboardPage: React.FC = () => {
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between text-sm">
                   <Link
-                    to={`/prompt-logs?brand=${brand.id}`}
+                    to={`/app/prompt-logs?brand=${brand.id}`}
                     className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
                   >
                     View Logs
@@ -256,7 +256,7 @@ const DashboardPage: React.FC = () => {
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first brand.</p>
           <div className="mt-6">
             <Link
-              to="/brands/create"
+              to="/app/brands/create"
               className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <Plus className="w-4 h-4 mr-2" />

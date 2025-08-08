@@ -59,7 +59,7 @@ const OnboardingPage: React.FC = () => {
     // Here you would normally save the data to your backend
     console.log('Brand data:', brandData);
     console.log('Team members:', teamMembers);
-    navigate('/dashboard');
+    navigate('/app/dashboard');
   };
 
   const TagInput: React.FC<{ 

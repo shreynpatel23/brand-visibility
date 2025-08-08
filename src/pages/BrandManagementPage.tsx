@@ -100,7 +100,7 @@ const BrandManagementPage: React.FC = () => {
           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-700">
             <div className="py-1">
               <Link
-                to={`/brands/${brand.id}/edit`}
+                to={`/app/brands/${brand.id}/edit`}
                 className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
@@ -108,7 +108,7 @@ const BrandManagementPage: React.FC = () => {
                 Edit Brand
               </Link>
               <Link
-                to={`/prompt-logs?brand=${brand.id}`}
+                to={`/app/prompt-logs?brand=${brand.id}`}
                 className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
@@ -180,7 +180,7 @@ const BrandManagementPage: React.FC = () => {
 
       <div className="flex justify-between text-sm">
         <Link
-          to={`/prompt-logs?brand=${brand.id}`}
+          to={`/app/prompt-logs?brand=${brand.id}`}
           className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors"
         >
           View Logs
@@ -203,7 +203,7 @@ const BrandManagementPage: React.FC = () => {
           </p>
         </div>
         <Link
-          to="/brands/create"
+          to="/app/brands/create"
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -372,7 +372,7 @@ const BrandManagementPage: React.FC = () => {
           {!searchTerm && selectedCategory === 'all' && selectedRegion === 'all' && (
             <div className="mt-6">
               <Link
-                to="/brands/create"
+                to="/app/brands/create"
                 className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <Plus className="w-4 h-4 mr-2" />
