@@ -119,7 +119,7 @@ const Layout: React.FC = () => {
 const SidebarContent: React.FC<{ navigation: any[], location: any }> = ({ navigation, location }) => {
   return (
     <>
-      <div className="flex items-center h-16 flex-shrink-0 px-4 bg-indigo-600">
+      <div className="flex items-center h-16 flex-shrink-0 px-4 bg-primary">
         <Building2 className="h-8 w-8 text-white" />
         <span className="ml-2 text-white font-semibold text-lg">BrandViz</span>
       </div>
@@ -133,11 +133,11 @@ const SidebarContent: React.FC<{ navigation: any[], location: any }> = ({ naviga
                 href={item.href}
                 className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
                   isActive
-                    ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-900 dark:text-indigo-100'
+                    ? 'bg-primary/10 text-primary'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
-                <item.icon className={`mr-3 h-6 w-6 ${isActive ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500'}`} />
+                <item.icon className={`mr-3 h-6 w-6 ${isActive ? 'text-primary' : 'text-gray-400 group-hover:text-gray-500'}`} />
                 {item.name}
               </a>
             );

@@ -132,7 +132,7 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Building2 className="h-8 w-8 text-indigo-600" />
+              <Building2 className="h-8 w-8 text-primary" />
               <span className="ml-2 text-2xl font-bold text-gray-900 dark:text-white">BrandViz</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -140,7 +140,7 @@ const LandingPage: React.FC = () => {
               <a href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</a>
               <a href="#testimonials" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Testimonials</a>
               <Link to="/login" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</Link>
-              <Link to="/signup" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">Get Started</Link>
+              <Link to="/signup" className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">Get Started</Link>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ const LandingPage: React.FC = () => {
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
               Track Your Brand's
-              <span className="text-indigo-600 block">AI Visibility</span>
+              <span className="text-primary block">AI Visibility</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Monitor how ChatGPT, Claude, and Gemini perceive your brand. Get actionable insights 
@@ -161,7 +161,7 @@ const LandingPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/signup"
-                className="bg-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-colors inline-flex items-center justify-center"
+                className="bg-primary text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary/90 transition-colors inline-flex items-center justify-center"
               >
                 Start Free Trial
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -256,7 +256,7 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
-                <div className="text-indigo-600 dark:text-indigo-400 mb-4">
+                <div className="text-primary mb-4">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
@@ -276,19 +276,19 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">500+</div>
+              <div className="text-4xl font-bold text-primary mb-2">500+</div>
               <div className="text-gray-600 dark:text-gray-300">Brands Tracked</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">1M+</div>
+              <div className="text-4xl font-bold text-primary mb-2">1M+</div>
               <div className="text-gray-600 dark:text-gray-300">Prompts Analyzed</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">98%</div>
+              <div className="text-4xl font-bold text-primary mb-2">98%</div>
               <div className="text-gray-600 dark:text-gray-300">Accuracy Rate</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">24/7</div>
+              <div className="text-4xl font-bold text-primary mb-2">24/7</div>
               <div className="text-gray-600 dark:text-gray-300">Monitoring</div>
             </div>
           </div>
@@ -320,7 +320,7 @@ const LandingPage: React.FC = () => {
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</div>
-                  <div className="text-sm text-indigo-600 dark:text-indigo-400">{testimonial.company}</div>
+                  <div className="text-sm text-primary">{testimonial.company}</div>
                 </div>
               </div>
             ))}
@@ -343,12 +343,12 @@ const LandingPage: React.FC = () => {
             {pricingPlans.map((plan, index) => (
               <div key={index} className={`bg-white dark:bg-gray-900 p-8 rounded-xl shadow-sm border-2 ${
                 plan.popular 
-                  ? 'border-indigo-500 relative' 
+                  ? 'border-primary relative' 
                   : 'border-gray-200 dark:border-gray-700'
               }`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-indigo-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-primary text-white px-4 py-1 rounded-full text-sm font-medium">
                       Most Popular
                     </span>
                   </div>
@@ -373,7 +373,7 @@ const LandingPage: React.FC = () => {
                   to="/signup"
                   className={`w-full py-3 px-6 rounded-lg font-semibold text-center block transition-colors ${
                     plan.popular
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      ? 'bg-primary text-white hover:bg-primary/90'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700'
                   }`}
                 >
@@ -386,22 +386,22 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-indigo-600">
+      <section className="py-24 bg-primary">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to track your brand's AI visibility?
           </h2>
-          <p className="text-xl text-indigo-100 mb-8">
+          <p className="text-xl text-primary-foreground/80 mb-8">
             Join hundreds of brands already using BrandViz to optimize their AI presence.
           </p>
           <Link
             to="/signup"
-            className="bg-white text-indigo-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center"
+            className="bg-white text-primary px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center"
           >
             Start Your Free Trial
             <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
-          <p className="text-indigo-200 mt-4 text-sm">
+          <p className="text-primary-foreground/60 mt-4 text-sm">
             14-day free trial • No credit card required
           </p>
         </div>
@@ -413,7 +413,7 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <Building2 className="h-8 w-8 text-indigo-400" />
+                <Building2 className="h-8 w-8 text-primary" />
                 <span className="ml-2 text-2xl font-bold">BrandViz</span>
               </div>
               <p className="text-gray-400 mb-4">

@@ -146,7 +146,7 @@ const DashboardPage: React.FC = () => {
         </div>
         <Link
           to="/app/brands/create"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Brand
@@ -163,7 +163,7 @@ const DashboardPage: React.FC = () => {
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
-                className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground"
               >
                 <option value="all">All Models</option>
                 <option value="chatgpt">ChatGPT</option>
@@ -176,7 +176,7 @@ const DashboardPage: React.FC = () => {
               <select
                 value={selectedStage}
                 onChange={(e) => setSelectedStage(e.target.value)}
-                className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground"
               >
                 <option value="all">All Stages</option>
                 <option value="TOFU">TOFU</option>
@@ -190,7 +190,7 @@ const DashboardPage: React.FC = () => {
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground"
               >
                 <option value="7days">Last 7 days</option>
                 <option value="30days">Last 30 days</option>
@@ -222,7 +222,7 @@ const DashboardPage: React.FC = () => {
                 </div>
                 <Link
                   to={`/app/brands/${brand.id}/edit`}
-                  className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+                  className="text-sm text-primary hover:text-primary/80"
                 >
                   Edit
                 </Link>
@@ -237,7 +237,7 @@ const DashboardPage: React.FC = () => {
                 <div className="flex justify-between text-sm">
                   <Link
                     to={`/app/prompt-logs?brand=${brand.id}`}
-                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+                    className="text-primary hover:text-primary/80"
                   >
                     View Logs
                   </Link>
@@ -257,7 +257,7 @@ const DashboardPage: React.FC = () => {
           <div className="mt-6">
             <Link
               to="/app/brands/create"
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Brand
