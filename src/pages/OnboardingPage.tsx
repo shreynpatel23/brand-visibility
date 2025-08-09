@@ -1,43 +1,67 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, ArrowLeft, X } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/form';
+
+const brandSchema = z.object({
+  name: z.string().min(2, 'Brand name must be at least 2 characters'),
+  category: z.string().min(1, 'Please select a category'),
+  region: z.string().min(1, 'Please select a region'),
+  useCase: z.string().optional(),
+});
+
+type BrandFormValues = z.infer<typeof brandSchema>;
 
 const OnboardingPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [brandData, setBrandData] = useState({
-    name: '',
-    category: '',
-    region: '',
-    targetAudience: [],
-    competitors: [],
-    useCase: '',
-    features: []
-  });
+  const [targetAudience, setTargetAudience] = useState<string[]>([]);
+  const [competitors, setCompetitors] = useState<string[]>([]);
+  const [features, setFeatures] = useState<string[]>([]);
   const [teamMembers, setTeamMembers] = useState([{ email: '', role: 'Editor' }]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const brandForm = useForm<BrandFormValues>({
+    resolver: zodResolver(brandSchema),
+    defaultValues: {
+      name: '',
+      category: '',
+      region: '',
+      useCase: '',
+    },
+  });
 
   const categories = ['Technology', 'Healthcare', 'Finance', 'Retail', 'Education', 'Entertainment', 'Other'];
   const regions = ['North America', 'Europe', 'Asia Pacific', 'Latin America', 'Middle East & Africa', 'Global'];
   const roles = ['Admin', 'Editor', 'Viewer'];
 
-  const handleBrandChange = (field: string, value: any) => {
-    setBrandData({ ...brandData, [field]: value });
-  };
-
   const addItem = (field: string, value: string) => {
     if (value.trim()) {
-      setBrandData({
-        ...brandData,
-        [field]: [...(brandData[field as keyof typeof brandData] as string[]), value.trim()]
-      });
+      if (field === 'targetAudience') {
+        setTargetAudience(prev => [...prev, value.trim()]);
+      } else if (field === 'competitors') {
+        setCompetitors(prev => [...prev, value.trim()]);
+      } else if (field === 'features') {
+        setFeatures(prev => [...prev, value.trim()]);
+      }
     }
   };
 
   const removeItem = (field: string, index: number) => {
-    setBrandData({
-      ...brandData,
-      [field]: (brandData[field as keyof typeof brandData] as string[]).filter((_, i) => i !== index)
-    });
+    if (field === 'targetAudience') {
+      setTargetAudience(prev => prev.filter((_, i) => i !== index));
+    } else if (field === 'competitors') {
+      setCompetitors(prev => prev.filter((_, i) => i !== index));
+    } else if (field === 'features') {
+      setFeatures(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   const addTeamMember = () => {
@@ -55,11 +79,23 @@ const OnboardingPage: React.FC = () => {
     setTeamMembers(teamMembers.filter((_, i) => i !== index));
   };
 
-  const handleComplete = () => {
-    // Here you would normally save the data to your backend
-    console.log('Brand data:', brandData);
-    console.log('Team members:', teamMembers);
-    navigate('/app/dashboard');
+  const handleComplete = async () => {
+    setLoading(true);
+    
+    try {
+      // Here you would normally save the data to your backend
+      console.log('Brand data:', { ...brandForm.getValues(), targetAudience, competitors, features });
+      console.log('Team members:', teamMembers);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      navigate('/app/dashboard');
+    } catch (error) {
+      console.error('Failed to complete onboarding:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const TagInput: React.FC<{ 
@@ -163,101 +199,132 @@ const OnboardingPage: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Brand Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={brandData.name}
-                    onChange={(e) => handleBrandChange('name', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    placeholder="Enter your brand name"
-                  />
-                </div>
+                <Form {...brandForm}>
+                  <div className="space-y-4">
+                    <FormField
+                      control={brandForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Brand Name *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter your brand name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Category *
-                    </label>
-                    <select
-                      value={brandData.category}
-                      onChange={(e) => handleBrandChange('category', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    >
-                      <option value="">Select category</option>
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={brandForm.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {categories.map(cat => (
+                                  <SelectItem key={cat} value={cat}>
+                                    {cat}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={brandForm.control}
+                        name="region"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Region *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select region" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {regions.map(region => (
+                                  <SelectItem key={region} value={region}>
+                                    {region}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Target Audience
+                      </label>
+                      <TagInput
+                        items={targetAudience}
+                        onAdd={(value) => addItem('targetAudience', value)}
+                        onRemove={(index) => removeItem('targetAudience', index)}
+                        placeholder="Add target audience (press Enter to add)"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Main Competitors
+                      </label>
+                      <TagInput
+                        items={competitors}
+                        onAdd={(value) => addItem('competitors', value)}
+                        onRemove={(index) => removeItem('competitors', index)}
+                        placeholder="Add competitor names (press Enter to add)"
+                      />
+                    </div>
+
+                    <FormField
+                      control={brandForm.control}
+                      name="useCase"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Use Case</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              rows={3}
+                              placeholder="Describe how your brand is used or what problem it solves"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Key Features
+                      </label>
+                      <TagInput
+                        items={features}
+                        onAdd={(value) => addItem('features', value)}
+                        onRemove={(index) => removeItem('features', index)}
+                        placeholder="Add key features (press Enter to add)"
+                      />
+                    </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Region *
-                    </label>
-                    <select
-                      value={brandData.region}
-                      onChange={(e) => handleBrandChange('region', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    >
-                      <option value="">Select region</option>
-                      {regions.map(region => (
-                        <option key={region} value={region}>{region}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Target Audience
-                  </label>
-                  <TagInput
-                    items={brandData.targetAudience}
-                    onAdd={(value) => addItem('targetAudience', value)}
-                    onRemove={(index) => removeItem('targetAudience', index)}
-                    placeholder="Add target audience (press Enter to add)"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Main Competitors
-                  </label>
-                  <TagInput
-                    items={brandData.competitors}
-                    onAdd={(value) => addItem('competitors', value)}
-                    onRemove={(index) => removeItem('competitors', index)}
-                    placeholder="Add competitor names (press Enter to add)"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Use Case
-                  </label>
-                  <textarea
-                    value={brandData.useCase}
-                    onChange={(e) => handleBrandChange('useCase', e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    placeholder="Describe how your brand is used or what problem it solves"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Key Features
-                  </label>
-                  <TagInput
-                    items={brandData.features}
-                    onAdd={(value) => addItem('features', value)}
-                    onRemove={(index) => removeItem('features', index)}
-                    placeholder="Add key features (press Enter to add)"
-                  />
-                </div>
+                </Form>
               </div>
             </div>
           )}
@@ -327,28 +394,33 @@ const OnboardingPage: React.FC = () => {
             )}
 
             {currentStep === 1 ? (
-              <button
-                onClick={() => setCurrentStep(2)}
-                disabled={!brandData.name || !brandData.category || !brandData.region}
-                className="ml-auto flex items-center px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              <Button
+                onClick={async () => {
+                  const isValid = await brandForm.trigger();
+                  if (isValid) {
+                    setCurrentStep(2);
+                  }
+                }}
+                className="ml-auto"
               >
                 Continue
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </button>
+              </Button>
             ) : (
               <div className="ml-auto space-x-3">
-                <button
+                <Button
+                  variant="outline"
                   onClick={handleComplete}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  disabled={loading}
                 >
                   Skip for now
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleComplete}
-                  className="px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 transition-colors"
+                  disabled={loading}
                 >
-                  Go to Dashboard
-                </button>
+                  {loading ? 'Setting up...' : 'Go to Dashboard'}
+                </Button>
               </div>
             )}
           </div>
