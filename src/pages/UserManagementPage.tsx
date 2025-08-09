@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { Plus, Search, Mail, MoreHorizontal, Shield, User, Eye } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/form';
 
 interface TeamMember {
   id: string;
@@ -12,15 +20,30 @@ interface TeamMember {
   invitedBy: string;
 }
 
+const inviteSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  role: z.enum(['Admin', 'Editor', 'Viewer'], {
+    required_error: 'Please select a role',
+  }),
+  message: z.string().optional(),
+});
+
+type InviteFormValues = z.infer<typeof inviteSchema>;
+
 const UserManagementPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [showInviteForm, setShowInviteForm] = useState(false);
-  const [inviteData, setInviteData] = useState({
-    email: '',
-    role: 'Editor',
-    message: ''
+  const [loading, setLoading] = useState(false);
+
+  const inviteForm = useForm<InviteFormValues>({
+    resolver: zodResolver(inviteSchema),
+    defaultValues: {
+      email: '',
+      role: 'Editor',
+      message: '',
+    },
   });
 
   // Mock data
@@ -101,19 +124,25 @@ const UserManagementPage: React.FC = () => {
   };
 
   const handleInvite = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleInvite = async (values: InviteFormValues) => {
+    setLoading(true);
     
     try {
       // Here you would normally send the invitation
-      console.log('Inviting user:', inviteData);
+      console.log('Inviting user:', values);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Reset form and close modal
-      setInviteData({ email: '', role: 'Editor', message: '' });
+      inviteForm.reset();
       setShowInviteForm(false);
       
       // You would typically refresh the team members list here
     } catch (error) {
       console.error('Failed to send invitation:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -198,70 +227,94 @@ const UserManagementPage: React.FC = () => {
             </button>
           </div>
           
-          <form onSubmit={handleInvite} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address *
-              </label>
-              <input
-                type="email"
-                required
-                value={inviteData.email}
-                onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                placeholder="colleague@company.com"
+          <Form {...inviteForm}>
+            <form onSubmit={inviteForm.handleSubmit(handleInvite)} className="space-y-4">
+              <FormField
+                control={inviteForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address *</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="colleague@company.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Role *
-              </label>
-              <select
-                value={inviteData.role}
-                onChange={(e) => setInviteData({ ...inviteData, role: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                {roles.map(role => (
-                  <option key={role} value={role}>{role}</option>
-                ))}
-              </select>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                {inviteData.role === 'Admin' && 'Full access to all features and settings'}
-                {inviteData.role === 'Editor' && 'Can create and edit brands, view all data'}
-                {inviteData.role === 'Viewer' && 'Read-only access to dashboard and reports'}
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Personal Message (Optional)
-              </label>
-              <textarea
-                rows={3}
-                value={inviteData.message}
-                onChange={(e) => setInviteData({ ...inviteData, message: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                placeholder="Add a personal message to the invitation..."
+              <FormField
+                control={inviteForm.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role *</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {roles.map(role => (
+                          <SelectItem key={role} value={role}>
+                            {role}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      {field.value === 'Admin' && 'Full access to all features and settings'}
+                      {field.value === 'Editor' && 'Can create and edit brands, view all data'}
+                      {field.value === 'Viewer' && 'Read-only access to dashboard and reports'}
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={() => setShowInviteForm(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 transition-colors"
-              >
-                Send Invitation
-              </button>
-            </div>
-          </form>
+              <FormField
+                control={inviteForm.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Personal Message (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={3}
+                        placeholder="Add a personal message to the invitation..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowInviteForm(false);
+                    inviteForm.reset();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? 'Sending...' : 'Send Invitation'}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
     );
@@ -279,7 +332,7 @@ const UserManagementPage: React.FC = () => {
         </div>
         <button
           onClick={() => setShowInviteForm(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
         >
           <Plus className="w-4 h-4 mr-2" />
           Invite Member
