@@ -44,8 +44,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    // Simulate signup - don't set user until email is verified
-    console.log('User signed up, awaiting email verification:', { email, name });
+    // Simulate signup and sending verification email
+    console.log('User signed up, sending verification email to:', { email, name });
+    // In a real app, this would send an email with a verification link
+    // The link would be something like: https://yourapp.com/verify-email?token=abc123&email=user@example.com
   };
 
   const logout = () => {

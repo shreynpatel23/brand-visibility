@@ -1,85 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Building2, Mail, CheckCircle, RefreshCw, AlertCircle } from 'lucide-react';
+import { Building2, Mail, CheckCircle, RefreshCw, AlertCircle, Loader } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 
 const EmailVerificationPage: React.FC = () => {
-  const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+  const [isVerifying, setIsVerifying] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const email = searchParams.get('email') || 'user@example.com';
+  const email = searchParams.get('email');
+  const token = searchParams.get('token');
 
-  // Countdown timer
+  // Auto-verify if token is present in URL
   useEffect(() => {
-    if (timeLeft > 0 && !verified) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
+    if (token && !verified && !isVerifying) {
+      handleTokenVerification(token);
     }
-  }, [timeLeft, verified]);
+  }, [token, verified, isVerifying]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!verificationCode.trim()) {
-      setError('Please enter the verification code');
-      return;
-    }
-
-    setLoading(true);
+  const handleTokenVerification = async (verificationToken: string) => {
+    setIsVerifying(true);
     setError('');
 
     try {
-      // Simulate API call for verification
-      console.log('Verifying code:', verificationCode);
+      // Simulate API call for token verification
+      console.log('Verifying token:', verificationToken);
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Simulate successful verification
-      if (verificationCode === '123456' || verificationCode.length === 6) {
-        setVerified(true);
-        setTimeout(() => {
-          navigate('/onboarding');
-        }, 2000);
-      } else {
-        setError('Invalid verification code. Please try again.');
-      }
+      setVerified(true);
+      setTimeout(() => {
+        navigate('/onboarding');
+      }, 2000);
     } catch (error) {
-      console.error('Verification failed:', error);
-      setError('Verification failed. Please try again.');
+      console.error('Token verification failed:', error);
+      setError('Invalid or expired verification link. Please request a new one.');
     } finally {
-      setLoading(false);
+      setIsVerifying(false);
     }
   };
 
-  const handleResendCode = async () => {
+  const handleResendEmail = async () => {
+    if (!email) {
+      setError('Email address is required to resend verification.');
+      return;
+    }
+
     setResending(true);
     setError('');
 
     try {
-      // Simulate API call to resend code
-      console.log('Resending verification code to:', email);
+      // Simulate API call to resend verification email
+      console.log('Resending verification email to:', email);
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      setTimeLeft(300); // Reset timer
-      setVerificationCode('');
+      // Show success message
+      setError('');
     } catch (error) {
-      console.error('Failed to resend code:', error);
-      setError('Failed to resend code. Please try again.');
+      console.error('Failed to resend email:', error);
+      setError('Failed to resend verification email. Please try again.');
     } finally {
       setResending(false);
     }
   };
 
+  // Show verification success
   if (verified) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -102,6 +90,59 @@ const EmailVerificationPage: React.FC = () => {
     );
   }
 
+  // Show verification in progress
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                <Loader className="h-8 w-8 text-blue-600 dark:text-blue-400 animate-spin" />
+              </div>
+            </div>
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+              Verifying your email...
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Please wait while we verify your email address.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if no email provided
+  if (!email) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
+                <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+              </div>
+            </div>
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+              Invalid Link
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              This verification link is invalid or incomplete.
+            </p>
+            <Button
+              onClick={() => navigate('/signup')}
+              className="mt-4"
+            >
+              Go to Signup
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show email sent confirmation (waiting for user to click link)
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -113,10 +154,10 @@ const EmailVerificationPage: React.FC = () => {
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-            Verify your email
+            Check your email
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            We've sent a 6-digit verification code to
+            We've sent a verification link to
           </p>
           <p className="font-medium text-gray-900 dark:text-white">{email}</p>
         </div>
@@ -126,87 +167,70 @@ const EmailVerificationPage: React.FC = () => {
             <Mail className="h-5 w-5 text-blue-400 mt-0.5" />
             <div className="ml-3">
               <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                Check your email
+                Verification email sent
               </h3>
               <div className="mt-2 text-sm text-blue-700 dark:text-blue-300">
                 <p>
-                  Enter the 6-digit code we sent to your email address. If you don't see it, check your spam folder.
+                  Click the verification link in your email to activate your account. 
+                  If you don't see it, check your spam folder.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleVerify} className="space-y-6">
-          <div>
-            <label htmlFor="verification-code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Verification Code
-            </label>
-            <Input
-              id="verification-code"
-              type="text"
-              value={verificationCode}
-              onChange={(e) => {
-                setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6));
-                setError('');
-              }}
-              placeholder="Enter 6-digit code"
-              className="text-center text-lg tracking-widest"
-              maxLength={6}
-              autoComplete="one-time-code"
-            />
-            {error && (
-              <div className="mt-2 flex items-center text-sm text-red-600 dark:text-red-400">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                {error}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-md p-4">
+            <div className="flex">
+              <AlertCircle className="h-5 w-5 text-red-400 mt-0.5" />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                  Verification failed
+                </h3>
+                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                  <p>{error}</p>
+                </div>
               </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <div className="text-gray-600 dark:text-gray-400">
-              {timeLeft > 0 ? (
-                <span>Code expires in {formatTime(timeLeft)}</span>
-              ) : (
-                <span className="text-red-600 dark:text-red-400">Code expired</span>
-              )}
             </div>
-            <button
-              type="button"
-              onClick={handleResendCode}
-              disabled={resending || timeLeft > 240} // Allow resend after 1 minute
-              className="text-primary hover:text-primary/80 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+          </div>
+        )}
+
+        <div className="space-y-4">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Didn't receive the email?
+            </p>
+            <Button
+              variant="outline"
+              onClick={handleResendEmail}
+              disabled={resending}
+              className="w-full"
             >
               {resending ? (
                 <span className="flex items-center">
-                  <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                   Sending...
                 </span>
               ) : (
-                'Resend code'
+                <span className="flex items-center">
+                  <Mail className="w-4 h-4 mr-2" />
+                  Resend verification email
+                </span>
               )}
-            </button>
+            </Button>
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading || verificationCode.length !== 6 || timeLeft === 0}
-            className="w-full"
-          >
-            {loading ? 'Verifying...' : 'Verify Email'}
-          </Button>
-        </form>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Wrong email address?{' '}
-            <button
-              onClick={() => navigate('/signup')}
-              className="font-medium text-primary hover:text-primary/80 transition-colors"
-            >
-              Go back to signup
-            </button>
-          </p>
+          <div className="text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Wrong email address?{' '}
+              <button
+                onClick={() => navigate('/signup')}
+                className="font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Go back to signup
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>

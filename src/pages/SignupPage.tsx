@@ -45,6 +45,7 @@ const SignupPage: React.FC = () => {
     
     try {
       await signup(values.email, values.password, values.name);
+      // Redirect to email verification page (waiting for link click)
       navigate(`/verify-email?email=${encodeURIComponent(values.email)}`);
     } catch (error) {
       console.error('Signup failed:', error);
