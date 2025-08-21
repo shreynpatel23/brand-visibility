@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
+import EmailVerificationPage from './pages/EmailVerificationPage';
 import CreateBrandPage from './pages/CreateBrandPage';
 import EditBrandPage from './pages/EditBrandPage';
 import PromptLogPage from './pages/PromptLogPage';
@@ -27,6 +28,7 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/app" element={<Layout />}>
               <Route index element={<Navigate to="/app/dashboard" replace />} />

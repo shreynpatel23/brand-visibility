@@ -44,13 +44,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    // Simulate signup
-    setUser({
-      id: '1',
-      email,
-      name,
-      role: 'Admin'
-    });
+    // Simulate signup - don't set user until email is verified
+    console.log('User signed up, awaiting email verification:', { email, name });
   };
 
   const logout = () => {
